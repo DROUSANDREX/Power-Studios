@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Power Studios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #080808;
+      --dark: #111111;
+      --card: #161616;
+      --gold: #C9A84C;
+      --gold-light: #E8C96E;
+      --white: #F5F0E8;
+      --muted: #6B6560;
+      --border: rgba(201,168,76,0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1), width 0.3s, height 0.3s;
+      opacity: 0.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 60px;
+      mix-blend-mode: normal;
+    }
+    nav::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+      pointer-events: none;
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-decoration: none;
+      position: relative;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+      position: relative;
+    }
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.3s, color 0.3s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 50%);
+    }
+    .hero-lines {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 80% 80% at center, black 20%, transparent 80%);
+    }
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.3s forwards;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 14rem);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+    .hero-title em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold);
+    }
+    .hero-sub {
+      max-width: 480px;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: rgba(245,240,232,0.55);
+      margin-top: 32px;
+      opacity: 0;
+      animation: fadeUp 1s 0.8s forwards;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 48px;
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+      transition: gap 0.3s;
+    }
+    .hero-cta:hover { gap: 22px; }
+    .hero-cta span {
+      display: inline-block;
+      width: 48px; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    .hero-cta:hover span { width: 72px; }
+    .hero-number {
+      position: absolute;
+      right: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22vw;
+      color: rgba(201,168,76,0.025);
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: -0.05em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SERVICES / SPONSORS */
+    #services { background: var(--dark); padding: 120px 60px; }
+    #services h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 7vw, 7rem);
+      line-height: 0.9;
+      margin-bottom: 80px;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      background: var(--card);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      opacity: 0.5;
+      margin-bottom: 32px;
+    }
+    .service-icon {
+      font-size: 2.4rem;
+      margin-bottom: 24px;
+    }
+    .service-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+    .service-card p {
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: rgba(245,240,232,0.5);
+    }
+    .sponsor-img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+      opacity: 0.8;
+      border-radius: 4px;
+    }
+
+    .section-tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* REVEAL ANIMATION */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1), transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      nav { padding: 24px 24px; }
+      section { padding: 80px 24px; }
+      .services-grid { grid-template-columns: 1fr; }
+      #hero { padding: 0 24px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <a class="nav-logo" href="#">POWER STUDIOS</a>
+    <ul class="nav-links">
+      <li><a href="#services">Patrocinadores</a></li>
+      <li><a href="https://drousandrex.github.io/Livro-perdido/" target="_blank">Criações</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-number">PS</div>
+    <p class="hero-eyebrow">Estúdio Criativo — Porto, Portugal</p>
+    <h1 class="hero-title">POWER<br><em>Studios</em></h1>
+    <p class="hero-sub">Onde a criatividade encontra a excelência. Produzimos experiências visuais que deixam marca.</p>
+    <a href="https://drousandrex.github.io/Livro-perdido/" target="_blank" class="hero-cta">Ver Portfólio <span></span> Explorar</a>
+  </section>
+
+  <!-- SERVICES / SPONSORS -->
+  <section id="services">
+    <div class="section-tag reveal">Patrocinadores</div>
+    <h2 class="reveal">Patrocinadores</h2>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">PARCEIRO</div>
+        <div class="service-icon">🦊</div>
+        <h3>foxyStudios</h3>
+        <p>Inovação visual e criatividade sem limites.</p>
+        <img src="Captura de ecrã 2026-04-17 195401.png" alt="foxyStudios" class="sponsor-img">
+      </div>
+      
+      <div class="service-card reveal">
+        <div class="service-num">02</div>
+        <div class="service-icon">🎬</div>
+        <h3>Produção de Vídeo</h3>
+        <p>Da concepção à pós-produção, criamos vídeos com impacto.</p>
+      </div>
+      
+      <div class="service-card reveal">
+        <div class="service-num">03</div>
+        <div class="service-icon">✦</div>
+        <h3>Branding & Design</h3>
+        <p>Identidades visuais que comunicam quem és.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+    });
+    function animateRing() {
+      rx += (mx - rx - 18) * 0.12;
+      ry += (my - ry - 18) * 0.12;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
